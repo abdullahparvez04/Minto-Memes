@@ -3,12 +3,28 @@ import api from '../api/client.js';
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-4 text-center">
-      <p className="text-2xl font-extrabold">{value}</p>
-      <p className="text-sm text-slate-500">{label}</p>
+    <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 p-4 text-center bg-white dark:bg-slate-900 shadow-card">
+      <p className="font-display text-2xl font-extrabold bg-gradient-to-r from-brand-500 to-fuchsia-500 bg-clip-text text-transparent">
+        {value}
+      </p>
+      <p className="text-sm text-slate-500 mt-0.5">{label}</p>
     </div>
   );
 }
+
+function SectionCard({ children }) {
+  return (
+    <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 p-5 space-y-3 bg-white dark:bg-slate-900 shadow-card">
+      {children}
+    </div>
+  );
+}
+
+const inputClass =
+  'w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-brand-500 transition';
+
+const primaryBtn =
+  'px-5 py-2.5 rounded-xl font-semibold bg-gradient-to-r from-brand-500 to-fuchsia-500 text-white hover:shadow-glow transition-all disabled:opacity-60';
 
 function UploadForm({ categories, onUploaded }) {
   const [title, setTitle] = useState('');
@@ -59,61 +75,57 @@ function UploadForm({ categories, onUploaded }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3"
-    >
-      <h2 className="font-bold text-lg">Upload a new meme</h2>
-      <input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <textarea
-        placeholder="Caption (optional)"
-        value={caption}
-        onChange={(e) => setCaption(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <form onSubmit={handleSubmit}>
+      <SectionCard>
+        <h2 className="font-display font-bold text-lg">✨ Upload a new meme</h2>
         <input
-          type="file"
-          accept="image/*,video/*"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="text-sm"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className={inputClass}
         />
-        <input
-          placeholder="...or paste an image/video URL"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          disabled={!!file}
-          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent disabled:opacity-50"
+        <textarea
+          placeholder="Caption (optional)"
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          className={inputClass}
         />
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {categories.map((c) => (
-          <button
-            type="button"
-            key={c.id}
-            onClick={() => toggleCat(c.id)}
-            className={`px-3 py-1 rounded-full text-sm border ${
-              selectedCats.includes(c.id)
-                ? 'bg-brand-500 text-white border-transparent'
-                : 'border-slate-300 dark:border-slate-700'
-            }`}
-          >
-            {c.name}
-          </button>
-        ))}
-      </div>
-      {error ? <p className="text-red-500 text-sm">{error}</p> : null}
-      <button
-        disabled={submitting}
-        className="px-5 py-2 rounded-lg font-semibold bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-60"
-      >
-        {submitting ? 'Uploading...' : 'Upload meme'}
-      </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input
+            type="file"
+            accept="image/*,video/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-brand-50 file:text-brand-700 dark:file:bg-brand-500/10 dark:file:text-brand-400 file:font-medium file:cursor-pointer"
+          />
+          <input
+            placeholder="...or paste an image/video URL"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            disabled={!!file}
+            className={`${inputClass} disabled:opacity-50`}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <button
+              type="button"
+              key={c.id}
+              onClick={() => toggleCat(c.id)}
+              className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
+                selectedCats.includes(c.id)
+                  ? 'bg-gradient-to-r from-brand-500 to-fuchsia-500 text-white shadow-glow'
+                  : 'border border-slate-200 dark:border-slate-700 hover:border-brand-300'
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+        {error ? <p className="text-red-500 text-sm">{error}</p> : null}
+        <button disabled={submitting} className={primaryBtn}>
+          {submitting ? 'Uploading...' : 'Upload meme'}
+        </button>
+      </SectionCard>
     </form>
   );
 }
@@ -130,8 +142,8 @@ function MemeRow({ meme, onChanged }) {
   }
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-slate-100 dark:border-slate-800">
-      <img src={meme.image_url} alt="" className="w-14 h-14 object-cover rounded-lg" />
+    <div className="flex items-center gap-3 py-3 border-b border-slate-100 dark:border-slate-800 last:border-0">
+      <img src={meme.image_url} alt="" className="w-14 h-14 object-cover rounded-xl" />
       <div className="flex-1 min-w-0">
         <p className="font-semibold truncate">{meme.title}</p>
         <p className="text-xs text-slate-500">
@@ -140,15 +152,15 @@ function MemeRow({ meme, onChanged }) {
       </div>
       <button
         onClick={togglePin}
-        className={`text-xs px-2.5 py-1 rounded-full border ${
+        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
           meme.is_pinned
-            ? 'bg-amber-400 text-white border-transparent'
-            : 'border-slate-300 dark:border-slate-700'
+            ? 'bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm'
+            : 'border border-slate-200 dark:border-slate-700 hover:border-amber-300'
         }`}
       >
         {meme.is_pinned ? '★ Pinned' : '☆ Pin'}
       </button>
-      <button onClick={remove} className="text-xs text-red-500 hover:underline">
+      <button onClick={remove} className="text-xs font-medium text-red-500 hover:underline">
         Delete
       </button>
     </div>
@@ -186,48 +198,44 @@ function TeacherForm({ onAdded }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3"
-    >
-      <h2 className="font-bold text-lg">Add a teacher</h2>
-      <input
-        placeholder="Teacher name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <input
-        placeholder="Photo URL (optional)"
-        value={photoUrl}
-        onChange={(e) => setPhotoUrl(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <input
-        placeholder="Badge (e.g. Legend)"
-        value={badge}
-        onChange={(e) => setBadge(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <div className="flex flex-wrap gap-2">
-        {BADGE_SUGGESTIONS.map((b) => (
-          <button
-            type="button"
-            key={b}
-            onClick={() => setBadge(b)}
-            className="px-3 py-1 rounded-full text-sm border border-slate-300 dark:border-slate-700"
-          >
-            🏅 {b}
-          </button>
-        ))}
-      </div>
-      {error ? <p className="text-red-500 text-sm">{error}</p> : null}
-      <button
-        disabled={submitting}
-        className="px-5 py-2 rounded-lg font-semibold bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-60"
-      >
-        {submitting ? 'Adding...' : 'Add teacher'}
-      </button>
+    <form onSubmit={handleSubmit}>
+      <SectionCard>
+        <h2 className="font-display font-bold text-lg">🏫 Add a teacher</h2>
+        <input
+          placeholder="Teacher name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className={inputClass}
+        />
+        <input
+          placeholder="Photo URL (optional)"
+          value={photoUrl}
+          onChange={(e) => setPhotoUrl(e.target.value)}
+          className={inputClass}
+        />
+        <input
+          placeholder="Badge (e.g. Legend)"
+          value={badge}
+          onChange={(e) => setBadge(e.target.value)}
+          className={inputClass}
+        />
+        <div className="flex flex-wrap gap-2">
+          {BADGE_SUGGESTIONS.map((b) => (
+            <button
+              type="button"
+              key={b}
+              onClick={() => setBadge(b)}
+              className="px-3.5 py-1.5 rounded-full text-sm font-medium border border-slate-200 dark:border-slate-700 hover:border-brand-300 transition"
+            >
+              🏅 {b}
+            </button>
+          ))}
+        </div>
+        {error ? <p className="text-red-500 text-sm">{error}</p> : null}
+        <button disabled={submitting} className={primaryBtn}>
+          {submitting ? 'Adding...' : 'Add teacher'}
+        </button>
+      </SectionCard>
     </form>
   );
 }
@@ -240,7 +248,7 @@ function TeacherRow({ teacher, onChanged }) {
   }
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-slate-100 dark:border-slate-800">
+    <div className="flex items-center gap-3 py-3 border-b border-slate-100 dark:border-slate-800 last:border-0">
       <img
         src={teacher.photo_url || 'https://api.dicebear.com/7.x/initials/svg?seed=' + teacher.name}
         alt=""
@@ -248,11 +256,9 @@ function TeacherRow({ teacher, onChanged }) {
       />
       <div className="flex-1 min-w-0">
         <p className="font-semibold truncate">{teacher.name}</p>
-        {teacher.badge ? (
-          <p className="text-xs text-slate-500">🏅 {teacher.badge}</p>
-        ) : null}
+        {teacher.badge ? <p className="text-xs text-slate-500">🏅 {teacher.badge}</p> : null}
       </div>
-      <button onClick={remove} className="text-xs text-red-500 hover:underline">
+      <button onClick={remove} className="text-xs font-medium text-red-500 hover:underline">
         Remove
       </button>
     </div>
@@ -299,52 +305,48 @@ function PollForm({ onAdded }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3"
-    >
-      <h2 className="font-bold text-lg">Create a poll</h2>
-      <input
-        placeholder="Poll question (e.g. Best teacher?)"
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-      />
-      <div className="space-y-2">
-        {options.map((opt, i) => (
-          <div key={i} className="flex gap-2">
-            <input
-              placeholder={`Option ${i + 1}`}
-              value={opt}
-              onChange={(e) => updateOption(i, e.target.value)}
-              className="flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-transparent"
-            />
-            {options.length > 2 ? (
-              <button
-                type="button"
-                onClick={() => removeOptionField(i)}
-                className="px-3 rounded-lg border border-slate-300 dark:border-slate-700 text-red-500"
-              >
-                ✕
-              </button>
-            ) : null}
-          </div>
-        ))}
-      </div>
-      <button
-        type="button"
-        onClick={addOptionField}
-        className="text-sm text-brand-500 font-medium"
-      >
-        + Add another option
-      </button>
-      {error ? <p className="text-red-500 text-sm">{error}</p> : null}
-      <button
-        disabled={submitting}
-        className="px-5 py-2 rounded-lg font-semibold bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-60"
-      >
-        {submitting ? 'Creating...' : 'Create poll'}
-      </button>
+    <form onSubmit={handleSubmit}>
+      <SectionCard>
+        <h2 className="font-display font-bold text-lg">📊 Create a poll</h2>
+        <input
+          placeholder="Poll question (e.g. Best teacher?)"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className={inputClass}
+        />
+        <div className="space-y-2">
+          {options.map((opt, i) => (
+            <div key={i} className="flex gap-2">
+              <input
+                placeholder={`Option ${i + 1}`}
+                value={opt}
+                onChange={(e) => updateOption(i, e.target.value)}
+                className={`flex-1 ${inputClass}`}
+              />
+              {options.length > 2 ? (
+                <button
+                  type="button"
+                  onClick={() => removeOptionField(i)}
+                  className="px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-red-500 hover:border-red-300 transition"
+                >
+                  ✕
+                </button>
+              ) : null}
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addOptionField}
+          className="text-sm text-brand-600 dark:text-brand-400 font-semibold"
+        >
+          + Add another option
+        </button>
+        {error ? <p className="text-red-500 text-sm">{error}</p> : null}
+        <button disabled={submitting} className={primaryBtn}>
+          {submitting ? 'Creating...' : 'Create poll'}
+        </button>
+      </SectionCard>
     </form>
   );
 }
@@ -359,10 +361,10 @@ function PollRow({ poll, onChanged }) {
   }
 
   return (
-    <div className="py-3 border-b border-slate-100 dark:border-slate-800">
+    <div className="py-3 border-b border-slate-100 dark:border-slate-800 last:border-0">
       <div className="flex items-center justify-between">
         <p className="font-semibold">{poll.question}</p>
-        <button onClick={remove} className="text-xs text-red-500 hover:underline">
+        <button onClick={remove} className="text-xs font-medium text-red-500 hover:underline">
           Delete
         </button>
       </div>
@@ -411,8 +413,13 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+    <div className="max-w-4xl mx-auto px-4 py-10 space-y-8">
+      <h1 className="font-display text-3xl font-bold tracking-tight">
+        Admin{' '}
+        <span className="bg-gradient-to-r from-brand-500 to-fuchsia-500 bg-clip-text text-transparent">
+          Dashboard
+        </span>
+      </h1>
 
       {analytics ? (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -426,8 +433,8 @@ export default function AdminDashboard() {
       <UploadForm categories={categories} onUploaded={refresh} />
 
       <div>
-        <h2 className="font-bold text-lg mb-2">Manage memes</h2>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 px-4">
+        <h2 className="font-display font-bold text-lg mb-2">Manage memes</h2>
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 px-4 bg-white dark:bg-slate-900 shadow-card">
           {memes.map((m) => (
             <MemeRow key={m.id} meme={m} onChanged={refresh} />
           ))}
@@ -440,8 +447,8 @@ export default function AdminDashboard() {
       <TeacherForm onAdded={refresh} />
 
       <div>
-        <h2 className="font-bold text-lg mb-2">Manage teachers</h2>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 px-4">
+        <h2 className="font-display font-bold text-lg mb-2">Manage teachers</h2>
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 px-4 bg-white dark:bg-slate-900 shadow-card">
           {teachers.map((t) => (
             <TeacherRow key={t.id} teacher={t} onChanged={refresh} />
           ))}
@@ -454,8 +461,8 @@ export default function AdminDashboard() {
       <PollForm onAdded={refresh} />
 
       <div>
-        <h2 className="font-bold text-lg mb-2">Manage polls</h2>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 px-4">
+        <h2 className="font-display font-bold text-lg mb-2">Manage polls</h2>
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 px-4 bg-white dark:bg-slate-900 shadow-card">
           {polls.map((p) => (
             <PollRow key={p.id} poll={p} onChanged={refresh} />
           ))}

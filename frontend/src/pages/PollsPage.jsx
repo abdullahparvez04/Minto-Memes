@@ -38,9 +38,9 @@ function PollCard({ poll, votedOptionId, onVoted }) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 p-5 bg-white dark:bg-slate-900">
-      <h3 className="font-bold text-lg mb-3">{poll.question}</h3>
-      <div className="space-y-2">
+    <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 p-5 bg-white dark:bg-slate-900 shadow-card hover:shadow-glow transition-all duration-300 animate-fadeUp">
+      <h3 className="font-display font-bold text-lg mb-4">{poll.question}</h3>
+      <div className="space-y-2.5">
         {options.map((opt) => {
           const pct = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
           const isMine = votedOptionId === opt.id;
@@ -49,29 +49,37 @@ function PollCard({ poll, votedOptionId, onVoted }) {
               key={opt.id}
               disabled={hasVoted || voting}
               onClick={() => vote(opt.id)}
-              className={`w-full text-left relative overflow-hidden rounded-lg border px-4 py-2.5 transition ${
-                isMine ? 'border-brand-500' : 'border-slate-300 dark:border-slate-700'
-              } ${hasVoted ? 'cursor-default' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`w-full text-left relative overflow-hidden rounded-xl border px-4 py-3 transition-all ${
+                isMine
+                  ? 'border-brand-400 ring-1 ring-brand-400'
+                  : 'border-slate-200 dark:border-slate-700'
+              } ${
+                hasVoted
+                  ? 'cursor-default'
+                  : 'hover:border-brand-300 dark:hover:border-brand-600 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+              }`}
             >
               {hasVoted ? (
                 <div
-                  className="absolute inset-y-0 left-0 bg-brand-500/15"
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-brand-500/15 to-fuchsia-500/15 transition-all duration-700"
                   style={{ width: `${pct}%` }}
                 />
               ) : null}
-              <div className="relative flex justify-between">
-                <span>
+              <div className="relative flex justify-between items-center">
+                <span className="font-medium">
                   {isMine ? '✅ ' : ''}
                   {opt.option_text}
                 </span>
-                {hasVoted ? <span className="font-semibold">{pct}%</span> : null}
+                {hasVoted ? <span className="font-bold text-brand-600 dark:text-brand-400">{pct}%</span> : null}
               </div>
             </button>
           );
         })}
       </div>
       {error ? <p className="text-red-500 text-sm mt-2">{error}</p> : null}
-      {hasVoted ? <p className="text-xs text-slate-500 mt-3">{totalVotes} total votes</p> : null}
+      {hasVoted ? (
+        <p className="text-xs text-slate-400 mt-3">{totalVotes} total votes</p>
+      ) : null}
     </div>
   );
 }
@@ -93,12 +101,31 @@ export default function PollsPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-5">
-      <h1 className="text-2xl font-bold">📊 Polls</h1>
+    <div className="max-w-2xl mx-auto px-4 py-10 space-y-5">
+      <div className="text-center mb-4">
+        <h1 className="font-display text-3xl font-bold tracking-tight">
+          📊{' '}
+          <span className="bg-gradient-to-r from-brand-500 via-fuchsia-500 to-orange-400 bg-clip-text text-transparent">
+            Polls
+          </span>
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1.5 text-sm">
+          Have your say. One vote, real results.
+        </p>
+      </div>
+
       {loading ? (
-        <p className="text-slate-500">Loading...</p>
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
+              <div className="skeleton h-5 w-2/3 rounded mb-4" />
+              <div className="skeleton h-10 w-full rounded-xl mb-2" />
+              <div className="skeleton h-10 w-full rounded-xl" />
+            </div>
+          ))}
+        </div>
       ) : polls.length === 0 ? (
-        <p className="text-slate-500">No polls yet — check back soon!</p>
+        <p className="text-center text-slate-500">No polls yet — check back soon!</p>
       ) : (
         polls.map((poll) => (
           <PollCard
