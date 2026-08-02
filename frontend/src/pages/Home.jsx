@@ -47,17 +47,31 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      <FilterBar
-        categories={categories}
-        activeCategory={category}
-        onCategoryChange={setCategory}
-        search={search}
-        onSearchChange={setSearch}
-        sort={sort}
-        onSortChange={setSort}
-      />
-      <MemeGrid memes={memes} loading={loading} hasMore={hasMore} onLoadMore={loadMore} />
+    <div>
+      <div className="max-w-6xl mx-auto px-4 pt-10 pb-4 text-center">
+        <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+          The freshest{' '}
+          <span className="bg-gradient-to-r from-brand-500 via-fuchsia-500 to-orange-400 bg-clip-text text-transparent">
+            school memes
+          </span>
+          , daily 🔥
+        </h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base">
+          Vote, laugh, and share — curated by your school, made for you.
+        </p>
+      </div>
+      <div className="max-w-6xl mx-auto px-4 pb-8">
+        <FilterBar
+          categories={categories}
+          activeCategory={category}
+          onCategoryChange={setCategory}
+          search={search}
+          onSearchChange={setSearch}
+          sort={sort}
+          onSortChange={setSort}
+        />
+        <MemeGrid memes={memes} loading={loading} hasMore={hasMore} onLoadMore={loadMore} />
+      </div>
     </div>
   );
 }

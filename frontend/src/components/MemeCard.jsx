@@ -33,13 +33,13 @@ export default function MemeCard({ meme }) {
   }
 
   return (
-    <div className="group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-lg hover:shadow-brand-500/10 transition">
+    <div className="group rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-800/70 bg-white dark:bg-slate-900 shadow-card hover:shadow-glow hover:-translate-y-1 transition-all duration-300 animate-fadeUp">
       {meme.is_pinned ? (
-        <div className="bg-gradient-to-r from-amber-400 to-pink-500 text-white text-xs font-bold px-3 py-1 text-center">
-          ⭐ Hall of Fame
+        <div className="bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 text-white text-xs font-bold px-3 py-1.5 text-center tracking-wide">
+          ⭐ HALL OF FAME
         </div>
       ) : null}
-      <Link to={`/meme/${meme.slug}`}>
+      <Link to={`/meme/${meme.slug}`} className="block overflow-hidden">
         {meme.media_type === 'video' ? (
           <video
             src={meme.image_url}
@@ -47,20 +47,20 @@ export default function MemeCard({ meme }) {
             muted
             loop
             playsInline
-            className="w-full h-56 object-cover bg-black"
+            className="w-full h-56 object-cover bg-black group-hover:scale-[1.02] transition-transform duration-500"
           />
         ) : (
           <img
             src={meme.image_url}
             alt={meme.title}
             loading="lazy"
-            className="w-full h-56 object-cover bg-slate-100 dark:bg-slate-800"
+            className="w-full h-56 object-cover bg-slate-100 dark:bg-slate-800 group-hover:scale-[1.03] transition-transform duration-500"
           />
         )}
       </Link>
       <div className="p-4">
         <Link to={`/meme/${meme.slug}`}>
-          <h3 className="font-bold text-lg leading-snug hover:text-brand-500 transition">
+          <h3 className="font-display font-bold text-lg leading-snug group-hover:text-brand-500 transition-colors">
             {meme.title}
           </h3>
         </Link>
@@ -70,25 +70,25 @@ export default function MemeCard({ meme }) {
           </p>
         ) : null}
 
-        <div className="flex flex-wrap gap-1.5 mt-2">
+        <div className="flex flex-wrap gap-1.5 mt-2.5">
           {meme.categories?.map((c) => (
             <span
               key={c.slug}
-              className="text-xs px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-400"
+              className="text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r from-brand-50 to-fuchsia-50 text-brand-700 dark:from-brand-500/10 dark:to-fuchsia-500/10 dark:text-brand-400"
             >
               {c.name}
             </span>
           ))}
         </div>
 
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-1.5 flex-wrap">
             <button
               onClick={() => vote('up')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-semibold transition ${
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold transition-all ${
                 myVote === 'up'
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-500/20'
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-glow'
+                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-500/20 hover:scale-105'
               }`}
             >
               <span className={pop && myVote === 'up' ? 'animate-pop' : ''}>👍</span>
@@ -96,10 +96,10 @@ export default function MemeCard({ meme }) {
             </button>
             <button
               onClick={() => vote('crazy')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-semibold transition ${
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold transition-all ${
                 myVote === 'crazy'
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-500/20'
+                  ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-glow'
+                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-500/20 hover:scale-105'
               }`}
             >
               <span className={pop && myVote === 'crazy' ? 'animate-pop' : ''}>🤯</span>
@@ -107,10 +107,10 @@ export default function MemeCard({ meme }) {
             </button>
             <button
               onClick={() => vote('down')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-semibold transition ${
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold transition-all ${
                 myVote === 'down'
-                  ? 'bg-slate-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  ? 'bg-slate-700 text-white shadow-md'
+                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 hover:scale-105'
               }`}
             >
               👎 {downvotes}
@@ -118,10 +118,10 @@ export default function MemeCard({ meme }) {
           </div>
           <button
             onClick={share}
-            className="text-sm text-slate-500 hover:text-brand-500 transition"
+            className="text-sm font-medium text-slate-400 hover:text-brand-500 transition"
             title="Copy link"
           >
-            {copied ? '✅ Copied' : '🔗 Share'}
+            {copied ? '✅' : '🔗'}
           </button>
         </div>
       </div>
